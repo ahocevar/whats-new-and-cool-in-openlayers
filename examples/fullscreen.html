@@ -76,7 +76,7 @@
           start: start
         }), ol.animation.bounce({
           duration: duration,
-          resolution: 10000,
+          resolution: map.getView().getResolution() * 16,
           start: start
         }));
         map.getView().setCenter(bonn);
