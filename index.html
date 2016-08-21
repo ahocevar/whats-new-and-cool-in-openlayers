@@ -62,7 +62,7 @@
         <section id="outline">
           <h2>Outline</h2>
           <ul>
-            <li class="fragment">(somewhat boring) meta </li>
+            <li class="fragment">(somewhat boring) meta (short)</li>
             <li class="fragment"><span class="highlight">What's</span> new and cool in <span class="highlight">OpenLayers</span>?</li>
             <li class="fragment">What's <span class="highlight">new</span> and cool <span class="highlight">in OpenLayers</span>?</li>
             <li class="fragment">What's new and <span class="highlight">cool in OpenLayers</span>?</li>
@@ -76,13 +76,47 @@
           <h4>(short)</h4>
         </section>
 
-        <section>
-          <p>
-            Insert meta slides about authors and companies
-          </p>
-          <p>
-            4 slides
-          </p>
+        <section id="author-andreas-hocevar">
+          <h2>Andreas Hocevar</h2>
+          <div class="split-info">
+            <div class="part" style="width:35%">
+              <img src="img/ah.jpg" class="plain" width="200"/><br />
+              <small>
+                <a class="email" href="mailto:ahocevar@boundlessgeo.com">ahocevar@boundlessgeo.com</a><br />
+                <a class="github" href="https://github.com/ahocevar/">@ahocevar</a><br />
+                <a class="twitter" href="https://twitter.com/ahoce/">@ahoce</a><br />
+              </small>
+            </div>
+            <div class="part" style="width:60%">
+              <div class="enumeration">
+                <ul>
+                  <li>TODO</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div style="clear:both"></div>
+        </section>
+
+        <section id="about-company-boundless">
+          <h2>Boundless</h2>
+          <div class="split-info">
+            <div class="part" style="width:35%">
+              <img src="img/boundless-logo.png" class="plain" width="200"/>
+              <br /><br />
+              <a class="github" href="https://github.com//boundlessgeo/">@boundlessgeo</a><br />
+              <a class="twitter" href="https://twitter.com/boundlessgeo/">@boundlessgeo</a>
+            </div>
+            <div class="part" style="width:60%">
+              <div class="enumeration">
+                <ul>
+                  <li><a href="http://boundlessgeo.com/">boundlessgeo.com</a></li>
+                  <li>TODO</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div style="clear:both"></div>
         </section>
 
         <section id="author-marc-jansen">
@@ -92,7 +126,7 @@
               <img src="img/mj.jpg" class="plain" width="200"/><br />
               <small>
                 <a class="email" href="mailto:jansen@terrestris.de">jansen@terrestris.de</a><br />
-                <a class="github" href="https://github.com/marcjansen/">@terrestris</a><br />
+                <a class="github" href="https://github.com/marcjansen/">@marcjansen</a><br />
                 <a class="twitter" href="https://twitter.com/selectoid/">@selectoid</a><br />
               </small><br />
               <img src="img/openlayers_de_1ed.png" class="plain" width=100 />
@@ -137,26 +171,75 @@
         </section>
 
         <section>
-          <p>
-            Insert meta slides about authors and companies
-          </p>
-        </section>
-
-        <section>
           <h1>What is OpenLayers?</h1>
         </section>
 
         <section>
-          <p>
-            Insert intro slides
-          </p>
-          <p>
-            3-4 slides
-          </p>
+          <h2>What is OpenLayers?</h2>
+          <blockquote>
+            A high-performance, feature-packed library for all your mapping
+            needs.
+            <footer>&mdash; <cite><a href="http://openlayers.org/">openlayers.org, 2016-06-26</a></cite></footer>
+          </blockquote>
+          <ul class="fragment">
+            <li>OpenSource (BSD)</li>
+            <li>JavaScript</li>
+            <li>OSGeo project</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>OpenLayers</h2>
+          <ul>
+            <li>…long history<ul>
+              <li>v2.0.0, August 2006</li>
+              <li>v3.0.0, August 2014</li>
+              <li>v3.17.1, July 2016</li>
+            </ul></li>
+            <li>many data sources &amp; layer types</li>
+            <li>interactios &amp; controls</li>
+            <li>actively developed &amp; big community</li>
+            <li>well documented &amp; huge number of examples</li>
+            <li>usable &amp; used everywhere</li>
+          </ul>
+        </section>
+
+        <section>
+          <p>TODO: example?</p>
         </section>
 
         <section>
           <h1>What is new?</h1>
+        </section>
+
+        <section>
+          <h2>What is new?</h2>
+          <table>
+            <tr>
+              <td>
+                <img class="plain" src="img/foss4g2015.png" alt="Logo FOSS4G 2015, Seoul, South Korea" />
+              </td>
+              <td style="vertical-align: middle;">
+                v3.9.0
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <img class="plain" src="img/foss4g2016.png" alt="Logo FOSS4G 2016, Bonn, Germany" />
+              </td>
+              <td style="vertical-align: middle;">
+                v3.17.1 <br /><small>(3.18.0 near)</small>
+              </td>
+            </tr>
+          </table>
+        </section>
+
+        <section
+          data-background-image="img/commits-since-v3.9.0.png"
+          data-background-size="90% auto">
+          <p>
+            &nbsp;
+          </p>
         </section>
 
         <section>
@@ -204,6 +287,24 @@
           <p>September 2015: 143 kB gzipped, minified from 3.8 MB</p>
           <p>August 2016: 140 kB gzipped, minified from 2.9 MB</p>
           <p>... and the library has grown in terms of features</p>
+        </section>
+
+        <section
+          data-background-image="img/contributions-since-v3.9.0.png"
+          data-background-size="90% auto">
+          <p>
+            &nbsp;
+          </p>
+        </section>
+
+        <section>
+          <h2>Top 8 contributors since v3.9.0</h2>
+          <ul>
+            <li>4 different companies</li>
+            <li>2 private people</li>
+            <li>7 different countries</li>
+            <li>1 bot</li>
+          </ul>
         </section>
 
         <section>
