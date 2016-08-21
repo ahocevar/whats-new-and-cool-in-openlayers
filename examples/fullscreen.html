@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Full Screen Drag, Rotate, and Zoom</title>
+    <link rel="stylesheet" href="ol.css" type="text/css">
+    <script src="ol.js"></script>
+    <style>
+      html, body, #map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      /* position the rotate control lower than usual */
+      .ol-rotate {
+        top: 3em;
+      }
+      #locate {
+        top: 0.5em;
+        right: 3em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map" class="map">
+      <div class="ol-control" id="locate">
+        <button id="locate-button">&ofcir;</button>
+      </div>
+    </div>
+    <script>
+      var bonn = ol.proj.fromLonLat([7.12335, 50.71914]);
+      var map = new ol.Map({
+        loadTilesWhileAnimating: true,
+        controls: ol.control.defaults().extend([
+          new ol.control.FullScreen(),
+          new ol.control.Control({element: document.getElementById('locate')})
+        ]),
+        interactions: ol.interaction.defaults().extend([
+          new ol.interaction.DragRotateAndZoom()
+        ]),
+        layers: [
+          new ol.layer.Tile({
+            preload: Infinity,
+            source: new ol.source.BingMaps({
+              key: 'AhaJDO_bWhekq58C0nGLRkwJSMphRFDTYeccozENkqZTAAa1W0OgoaWmcgbPxatZ',
+              imagerySet: 'AerialWithLabels'
+            })
+          }),
+          new ol.layer.Vector({
+            source: new ol.source.Vector({
+              features: [
+                new ol.Feature(new ol.geom.Point(bonn))
+              ]
+            }),
+            style: new ol.style.Style({
+              image: new ol.style.Icon({
+                src: '../img/foss4g2016-banner-micro-01-w.png'
+              })
+            })
+          })
+        ],
+        // Use the canvas renderer because it's currently the fastest
+        target: 'map',
+        view: new ol.View({
+          center: [14111360, 4533660],
+          rotation: -0.5046809,
+          zoom: 16
+        })
+      });
+
+      document.getElementById('locate-button').addEventListener('click', function() {
+        var duration = 5000;
+        var start = +new Date();
+        map.beforeRender(ol.animation.pan({
+          duration: duration,
+          source: map.getView().getCenter(),
+          start: start
+        }), ol.animation.bounce({
+          duration: duration,
+          resolution: 10000,
+          start: start
+        }));
+        map.getView().setCenter(bonn);
+      });
+
+    </script>
+  </body>
+</html>
