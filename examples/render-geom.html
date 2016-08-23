@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OSM Vector Tiles</title>
+    <link rel="stylesheet" href="ol.css" type="text/css">
+    <script src="ol.js"></script>
+    <style>
+      .map {
+        background: #f8f4f0;
+      }
+      #c1, #c2 {
+        position: absolute;
+        right: 20px;
+        border: 1px solid black;
+        background-color: rgba(255,255,255,0.7);
+      }
+      #c1 {
+        top: 20px;
+      }
+      #c2 {
+        top: 240px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map" class="map"></div>
+    <canvas id="c1" width="360" height="180"></canvas>
+    <canvas id="c2" width="360" height="180"></canvas>
+    <script>
+      var format = new ol.format.TopoJSON();
+      var tileGrid = ol.tilegrid.createXYZ({maxZoom: 19});
+      var roadStyleCache = {};
+      var roadColor = {
+        'major_road': '#776',
+        'minor_road': '#ccb',
+        'highway': '#f39'
+      };
+      var landuseStyleCache = {};
+      var buildingStyle = new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: '#666',
+          opacity: 0.4
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#444',
+          width: 1
+        })
+      });
+
+      var map = new ol.Map({
+        layers: [
+          new ol.layer.VectorTile({
+            source: new ol.source.VectorTile({
+              format: format,
+              tileGrid: tileGrid,
+              url: 'http://{a-c}.tile.openstreetmap.us/' +
+                  'vectiles-water-areas/{z}/{x}/{y}.topojson'
+            }),
+            style: new ol.style.Style({
+              fill: new ol.style.Fill({
+                color: '#9db9e8'
+              })
+            })
+          }),
+          new ol.layer.VectorTile({
+            source: new ol.source.VectorTile({
+              format: format,
+              tileGrid: tileGrid,
+              url: 'http://{a-c}.tile.openstreetmap.us/' +
+                  'vectiles-highroad/{z}/{x}/{y}.topojson'
+            }),
+            style: function(feature) {
+              var kind = feature.get('kind');
+              var railway = feature.get('railway');
+              var sort_key = feature.get('sort_key');
+              var styleKey = kind + '/' + railway + '/' + sort_key;
+              var style = roadStyleCache[styleKey];
+              if (!style) {
+                var color, width;
+                if (railway) {
+                  color = '#7de';
+                  width = 1;
+                } else {
+                  color = roadColor[kind];
+                  width = kind == 'highway' ? 1.5 : 1;
+                }
+                style = new ol.style.Style({
+                  stroke: new ol.style.Stroke({
+                    color: color,
+                    width: width
+                  }),
+                  zIndex: sort_key
+                });
+                roadStyleCache[styleKey] = style;
+              }
+              return style;
+            }
+          }),
+          new ol.layer.VectorTile({
+            source: new ol.source.VectorTile({
+              format: format,
+              tileGrid: tileGrid,
+              url: 'http://{a-c}.tile.openstreetmap.us/' +
+                  'vectiles-buildings/{z}/{x}/{y}.topojson'
+            }),
+            style: function(f, resolution) {
+              return (resolution < 10) ? buildingStyle : null;
+            }
+          }),
+          new ol.layer.VectorTile({
+            source: new ol.source.VectorTile({
+              format: format,
+              tileGrid: tileGrid,
+              url: 'http://{a-c}.tile.openstreetmap.us/' +
+                  'vectiles-land-usages/{z}/{x}/{y}.topojson'
+            }),
+            visible: false,
+            style: function(feature) {
+              var kind = feature.get('kind');
+              var styleKey = kind;
+              var style = landuseStyleCache[styleKey];
+              if (!style) {
+                var color, width;
+                color = {
+                  'parking': '#ddd',
+                  'industrial': '#aaa',
+                  'urban area': '#aaa',
+                  'park': '#76C759',
+                  'school': '#DA10E7',
+                  'garden': '#76C759',
+                  'pitch': '#D58F8D',
+                  'scrub': '#3E7D28',
+                  'residential': '#4C9ED9'
+                }[kind];
+                width = kind == 'highway' ? 1.5 : 1;
+                style = new ol.style.Style({
+                  stroke: new ol.style.Stroke({
+                    color: color,
+                    width: width
+                  }),
+                  fill: new ol.style.Fill({
+                    color: color,
+                    opacity: 0.5
+                  })
+                });
+                landuseStyleCache[styleKey] = style;
+              }
+              return style;
+            }
+          })
+        ],
+        target: 'map',
+        view: new ol.View({
+          center: ol.proj.fromLonLat([-74.0064, 40.7142]),
+          maxZoom: 19,
+          zoom: 15
+        })
+      });
+      var c1 = document.getElementById('c1');
+      var vectorContext1 = ol.render.toContext(c1.getContext('2d'), {size: [360, 180]});
+      var c2 = document.getElementById('c2');
+      var vectorContext2 = ol.render.toContext(c2.getContext('2d'), {size: [360, 180]});
+      var fill = new ol.style.Fill({color: 'blue'});
+      var stroke = new ol.style.Stroke({color: 'black'});
+      var style = new ol.style.Style({
+        fill: fill,
+        stroke: stroke,
+        image: new ol.style.Circle({
+          radius: 10,
+          fill: fill,
+          stroke: stroke
+        })
+      });
+      vectorContext1.setStyle(style);
+      vectorContext2.setStyle(style);
+
+      map.on('singleclick', function(evt) {
+        var px = evt.pixel;
+        var feat = map.forEachFeatureAtPixel(px, function(feat) {
+          return feat;
+        });
+
+        if (feat) {
+          c1.width = c1.width;
+          vectorContext1.setStyle(style);
+          var geom = feat.getGeometry();
+          var g2 = geom.clone().transform('EPSG:3857', 'EPSG:4326');
+          var scaleW = 350 / ol.extent.getWidth(g2.getExtent());
+          var scaleH = 170 / ol.extent.getHeight(g2.getExtent());
+
+          var use = Math.min(scaleW, scaleH);
+          console.log(use);
+          var extent = g2.getExtent();
+          console.log(g2.clone().getExtent());
+          g2.scale(use, -use); // GOO
+          // g2.translate(180, 90);
+          // c1.getContext('2d').translate(270, 52.5)
+          c1.getContext('2d').translate(180 - extent[2],90 - extent[1]);
+          // c1.getContext('2d').scale(-use, -use);
+          // c1.getContext('2d').scale(1, -1);
+          // c1.getContext('2d').translate(-180, 90);
+          vectorContext1.drawGeometry(g2);
+
+
+//           c1.width = c1.width;
+//           var geom = feat.getGeometry();
+//           var extent =  geom.getExtent();
+//           var factor = ol.extent.getWidth(extent) / 300;
+// console.log(geom, extent, ol.extent.getWidth(extent));
+//           c1.getContext('2d').translate(-extent[0], extent[1]);
+//           // c1.getContext('2d').scale(factor, factor);
+//           vectorContext1.drawGeometry(geom);
+//           vectorContext1.drawGeometry(new ol.geom.Polygon([[[2, 2], [98, 2], [2, 98], [2, 2]]]));
+        }
+      })
+    </script>
+  </body>
+</html>
