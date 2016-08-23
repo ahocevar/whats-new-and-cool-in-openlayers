@@ -53,6 +53,7 @@
           reprojectionErrorThreshold: 2
         })
       });
+      layer.getSource().setRenderReprojectionEdges(true);
 
       var map = new ol.Map({
         layers: [layer],
