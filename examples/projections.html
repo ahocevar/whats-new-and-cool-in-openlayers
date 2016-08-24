@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tissot Indicatrix</title>
+    <link rel="stylesheet" href="ol.css" type="text/css">
+    <style>
+      html, body, .map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      .map {
+        position: relative;
+      }
+      .half {
+        width: calc(50% - 10px);
+        height: calc(100% - 10px);
+        padding: 5px;
+      }
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+      }
+      .label {
+        font-size: 20pt;
+        font-family: sans-serif;
+        position: absolute;
+        left: 10px;
+        bottom: 10px;
+        z-index: 1;
+      }
+    </style>
+    <script src="ol.js"></script>
+  </head>
+  <body>
+    <div class="left half">
+      <div id="map4326" class="map">
+        <div class="label">EPSG:4326</div>
+      </div>
+    </div>
+    <div class="right half">
+      <div id="map3857" class="map">
+        <div class="label">EPSG:3857</div>
+      </div>
+    </div>
+    <script>
+      var vectorLayer4326 = new ol.layer.Vector({
+        source: new ol.source.Vector()
+      });
+
+      var vectorLayer3857 = new ol.layer.Vector({
+        source: new ol.source.Vector()
+      });
+
+      var map4326 = new ol.Map({
+        controls: [],
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+              url: 'http://demo.boundlessgeo.com/geoserver/wms',
+              params: {
+                'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+              }
+            })
+          }),
+          vectorLayer4326
+        ],
+        renderer: 'canvas',
+        target: 'map4326',
+        view: new ol.View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          zoom: 2
+        })
+      });
+
+      var map3857 = new ol.Map({
+        controls: [],
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+              url: 'http://demo.boundlessgeo.com/geoserver/wms',
+              params: {
+                'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+              }
+            })
+          }),
+          vectorLayer3857
+        ],
+        renderer: 'canvas',
+        target: 'map3857',
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 2
+        })
+      });
+
+      var wgs84Sphere = new ol.Sphere(6378137);
+
+      var radius = 800000;
+      var x, y;
+      for (x = -180; x < 180; x += 30) {
+        for (y = -90; y < 90; y += 30) {
+          var circle4326 = ol.geom.Polygon.circular(wgs84Sphere, [x, y], radius, 64);
+          var circle3857 = circle4326.clone().transform('EPSG:4326', 'EPSG:3857');
+          vectorLayer4326.getSource().addFeature(new ol.Feature(circle4326));
+          vectorLayer3857.getSource().addFeature(new ol.Feature(circle3857));
+        }
+      }
+    </script>
+  </body>
+</html>
