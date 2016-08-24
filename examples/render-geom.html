@@ -5,27 +5,26 @@
     <link rel="stylesheet" href="ol.css" type="text/css">
     <script src="ol.js"></script>
     <style>
+      html, body, .map {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
       .map {
         background: #f8f4f0;
       }
-      #c1, #c2 {
+      #c1 {
         position: absolute;
+        top: 20px;
         right: 20px;
         border: 1px solid black;
         background-color: rgba(255,255,255,0.7);
-      }
-      #c1 {
-        top: 20px;
-      }
-      #c2 {
-        top: 240px;
       }
     </style>
   </head>
   <body>
     <div id="map" class="map"></div>
     <canvas id="c1" width="360" height="180"></canvas>
-    <canvas id="c2" width="360" height="180"></canvas>
     <script>
       var format = new ol.format.TopoJSON();
       var tileGrid = ol.tilegrid.createXYZ({maxZoom: 19});
@@ -158,21 +157,10 @@
       });
       var c1 = document.getElementById('c1');
       var vectorContext1 = ol.render.toContext(c1.getContext('2d'), {size: [360, 180]});
-      var c2 = document.getElementById('c2');
-      var vectorContext2 = ol.render.toContext(c2.getContext('2d'), {size: [360, 180]});
-      var fill = new ol.style.Fill({color: 'blue'});
-      var stroke = new ol.style.Stroke({color: 'black'});
+      var fill = new ol.style.Fill({color: 'black'});
       var style = new ol.style.Style({
-        fill: fill,
-        stroke: stroke,
-        image: new ol.style.Circle({
-          radius: 10,
-          fill: fill,
-          stroke: stroke
-        })
+        fill: fill
       });
-      vectorContext1.setStyle(style);
-      vectorContext2.setStyle(style);
 
       map.on('singleclick', function(evt) {
         var px = evt.pixel;
@@ -180,25 +168,24 @@
           return feat;
         });
 
+        c1.width = c1.width;
+
         if (feat) {
-          c1.width = c1.width;
-          vectorContext1.setStyle(style);
           var geom = feat.getGeometry();
           var g2 = geom.clone().transform('EPSG:3857', 'EPSG:4326');
           var scaleW = 350 / ol.extent.getWidth(g2.getExtent());
           var scaleH = 170 / ol.extent.getHeight(g2.getExtent());
 
           var use = Math.min(scaleW, scaleH);
-          console.log(use);
           var extent = g2.getExtent();
-          console.log(g2.clone().getExtent());
           g2.scale(use, -use); // GOO
           // g2.translate(180, 90);
           // c1.getContext('2d').translate(270, 52.5)
-          c1.getContext('2d').translate(180 - extent[2],90 - extent[1]);
+          g2.translate(180 - extent[2], 90 - extent[1]);
           // c1.getContext('2d').scale(-use, -use);
           // c1.getContext('2d').scale(1, -1);
           // c1.getContext('2d').translate(-180, 90);
+          vectorContext1.setStyle(style);
           vectorContext1.drawGeometry(g2);
 
 

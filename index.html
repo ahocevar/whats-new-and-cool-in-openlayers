@@ -285,7 +285,7 @@
                 <img class="plain" src="img/foss4g2016.png" alt="Logo FOSS4G 2016, Bonn, Germany" />
               </td>
               <td style="vertical-align: middle;">
-                v3.17.1 <br /><small>(3.18.0 near)</small>
+                v3.18.0 <br />
               </td>
             </tr>
           </table>
@@ -321,7 +321,7 @@
 
         <section>
           <h2>Render geometries anywhere</h2>
-          <p>TODO #4523</p>
+          <iframe class="stretch" src="examples/render-geom.html"></iframe>
         </section>
 
         <section>
@@ -353,16 +353,48 @@ new ol.source.CartoDB({
 
         <section>
           <h2>Image ArcGISRest source</h2>
-          <p>TODO #3880</p>
+          <pre><code>
+new ol.source.ImageArcGISRest({
+  url: 'http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StateCityHighway_USA/MapServer'
+});
+          </code></pre>
         </section>
 
         <section>
           <h2>OGC filters for WFS</h2>
-          <p>TODO #5252</p>
+          <pre><code>
+new ol.format.WFS().writeGetFeature({
+  srsName: 'EPSG:3857',
+  featureNS: 'http://openstreemap.org',
+  featurePrefix: 'osm',
+  featureTypes: ['water_areas'],
+  outputFormat: 'application/json',
+  filter: ol.format.ogc.filter.and(
+    ol.format.ogc.filter.like('name', 'Mississippi*'),
+    ol.format.ogc.filter.equalTo('waterway', 'riverbank')
+  )
+});
+          </code></pre>
         </section>
 
         <section>
-          <h1>What is next?</h1>
+          <h2>Other improvements...</h2>
+          <table>
+            <tr>
+              <td style="vertical-align:top">
+                <img src="img/url-change-before.gif" class="plain" />
+              </td>
+              <td>
+                <img src="img/url-change-after.gif" class="plain" />
+              </td>
+            </tr>
+          </table>
+        </section>
+
+        <section>
+          <h2>Library size</h2>
+          <p>September 2015: 143 kB gzipped, minified from 3.8 MB</p>
+          <p>August 2016: 140 kB gzipped, minified from 2.9 MB</p>
         </section>
 
         <section>
@@ -372,26 +404,44 @@ new ol.source.CartoDB({
 
         <section>
           <h2>September 2015</h2>
-          <p>FOSS4G conference, Seoul, South Korea</p>
-          <p>OpenLayers developers decide to remove the dependency on Closure Library and allow the use of mainstream build tools and bundlers.</p>
-          <p>Building app + library with Closure Compiler will still be possible.</p>
+          <blockquote>
+            Our users want mainstream build tools and bundlers. Let's remove the dependency on Closure Library!
+            <footer>&mdash; <cite>OpenLayers devs, FOSS4G 2015, Seoul</cite></footer>
+          </blockquote>
+          <p>Existing Closure Compiler workflows won't break.</p>
         </section>
 
         <section>
           <h2>August 2016</h2>
-          <p>Closure Library removal is 95% complete</p>
-          <p>Increased performance with our own lightweight event system and matrix transforms</p>
+          <p>Closure Library removal is 98% complete.</p>
+          <ul>
+            <li>Lightweight event system, matrix transforms and class inheritance.</li>
+            <li>No more legacy code for outdated browsers.</li>
+            <li>JavaScript as it was meant to be 👻.</li>
         </section>
 
         <section>
-          <h2>Library size</h2>
-          <p>September 2015: 143 kB gzipped, minified from 3.8 MB</p>
-          <p>August 2016: 140 kB gzipped, minified from 2.9 MB</p>
-          <p>... and the library has grown in terms of features</p>
+          <h1>What is next?</h1>
         </section>
 
         <section>
-          mapbox gl style library (ol-mapbox-gl-style)
+          <pre><code>
+var OLMap = require('openlayers/map');
+var View = require('openlayers/view');
+var TileLayer = require('openlayers/layer/tile');
+var OSM = new require('openlayers/source/osm');
+
+var map = new OLMap({
+  target: 'map',
+  layers: [new TileLayer({
+    source: OSM
+  })],
+  view: new View({
+    center: require('ol/proj').fromLonLat([7.0936, 50.7362]),
+    zoom: 2
+  })
+});
+          </code></pre>
         </section>
 
         <section id="thanks-questions">
@@ -411,11 +461,10 @@ new ol.source.CartoDB({
             <address style="text-align: left">
               <strong>Andreas Hocevar</strong><br />
               <span style="font-size: smaller;">
-              TODO <br />
-              TODO <br />
-              TODO <br />
-              Austria<br />
-              TODO
+              Boundless Spatial <br />
+              <br />
+              <br />
+              ahocevar@boundlessgeo.com
               </span>
             </address>
           </div>
@@ -424,8 +473,7 @@ new ol.source.CartoDB({
               <strong>Marc Jansen</strong><br />
               <span style="font-size: smaller;">
               terrestris GmbH &amp; Co. KG<br />
-              Kölnstr. 99<br />
-              53111 Bonn<br />
+              Kölnstr. 99, 53111 Bonn<br />
               Germany<br />
               jansen@terrestris.de
               </span>
