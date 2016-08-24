@@ -325,18 +325,30 @@
         </section>
 
         <section>
-          <h2>Faster tile rendering</h2>
-          <p>TODO #4794, #4597</p>
+          <h2>Rotate geometries</h2>
+          <pre><code>
+var geom = ol.geom.Polygon.fromExtent([-5, -5, 5, 5]);
+geom.rotate(Math.PI / 4);
+          </code></pre>
         </section>
 
         <section>
           <h2>CartoDB tile source</h2>
-          <p>TODO #4926</p>
-        </section>
-
-        <section>
-          <h2>Rotate geometries</h2>
-          <p>TODO #4984</p>
+          <pre><code>
+new ol.source.CartoDB({
+  account: 'myaccount',
+  config: {
+    'layers': [{
+      'type': 'cartodb',
+      'options': {
+        'cartocss_version': '2.1.1',
+        'cartocss': '#layer { polygon-fill: #F00; }',
+        'sql': 'select * from european_countries_e where area > 50000'
+      }
+    }]
+  }
+});
+          </code></pre>
         </section>
 
         <section>
@@ -345,7 +357,7 @@
         </section>
 
         <section>
-          <h2>OGC filters for WFS queries</h2>
+          <h2>OGC filters for WFS</h2>
           <p>TODO #5252</p>
         </section>
 
