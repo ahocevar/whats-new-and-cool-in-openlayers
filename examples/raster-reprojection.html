@@ -17,7 +17,7 @@
       #proj {
         position: absolute;
         bottom: 10px;
-        right: 10px;
+        left: 10px;
         background-color: white;
         padding: 5px;
         font-size: 20pt;
@@ -38,9 +38,8 @@
       var proj54009 = ol.proj.get('Mollweide');
       proj54009.setExtent([-18e6, -18e6, 18e6, 18e6]);
 
-      proj4.defs('EPSG:3577', '+proj=aea +lat_1=-18 +lat_2=-36 +lat_0=0 +lon_0=132 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
-      var proj3577 = ol.proj.get('EPSG:3577');
-      //proj3577.setExtent([-1594494.51, -4894565.95, 2436270.29,-1240480.01]);
+      proj4.defs('EPSG:31466', '+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +towgs84=598.1,73.7,418.2,0.202,0.045,-2.455,6.7 +units=m +no_defs');
+      var proj31466 = ol.proj.get('EPSG:31466');
 
       var layer = new ol.layer.Tile({
         source: new ol.source.TileWMS({
@@ -57,16 +56,16 @@
 
       var map = new ol.Map({
         layers: [layer],
-        controls: [],
-        interactions: [],
         target: 'map',
         view: new ol.View({
           projection: 'EPSG:4326',
-          center: [131, -26],
+          center: [7.099814, 50.733992],
           zoom: 4,
           minZoom: 4
         })
       });
+
+      var view = map.getView();
 
 
       var baseLayerSelect = document.getElementById('base-layer');
@@ -79,18 +78,19 @@
         var newProjExtent = newProj.getExtent();
         var newView = new ol.View({
           projection: newProj,
-          center: ol.proj.transform([131, -26], 'EPSG:4326', proj),
-          zoom: 4,
+          center: ol.proj.transform(view.getCenter(), view.getProjection(), proj),
+          zoom: view.getZoom(),
           minZoom: 4,
           extent: newProjExtent || undefined
         });
+        view = newView;
         map.setView(newView);
 
       }
 
       var projections = [
         'EPSG:3857',
-        'EPSG:3577',
+        'EPSG:31466',
         'Gall Peters',
         'Mollweide',
         'EPSG:4326'
