@@ -12,7 +12,7 @@
         margin: 0;
       }
       #map {
-        background-color: rgb(130, 181, 213)
+        background-color: #9BB4CB;
       }
       #proj {
         position: absolute;
@@ -27,7 +27,7 @@
   </head>
   <body>
     <div id="map" class="map"></div>
-    <div id="proj">EPSG:4326</div>
+    <div id="proj">EPSG:3857</div>
     <script>
       proj4.defs('Gall Peters', '+proj=cea +lon_0=0 +x_0=0 +y_0=0 +lat_ts=45 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
       var projGallPeters = ol.proj.get('Gall Peters');
@@ -42,24 +42,16 @@
       var proj31466 = ol.proj.get('EPSG:31466');
 
       var layer = new ol.layer.Tile({
-        source: new ol.source.TileWMS({
-          url: 'http://demo.boundlessgeo.com/geoserver/wms',
-          crossOrigin: '',
-          params: {
-            'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
-          },
-          projection: 'EPSG:4326',
-          reprojectionErrorThreshold: 2
+        source: new ol.source.Stamen({
+          layer: 'terrain'
         })
       });
-      layer.getSource().setRenderReprojectionEdges(true);
 
       var map = new ol.Map({
         layers: [layer],
         target: 'map',
         view: new ol.View({
-          projection: 'EPSG:4326',
-          center: [7.099814, 50.733992],
+          center: ol.proj.fromLonLat([7.099814, 50.733992]),
           zoom: 4,
           minZoom: 4
         })
@@ -90,10 +82,10 @@
 
       var projections = [
         'EPSG:3857',
+        'EPSG:4326',
         'EPSG:31466',
         'Gall Peters',
-        'Mollweide',
-        'EPSG:4326'
+        'Mollweide'
       ];
       var projIndex = 0;
       window.setInterval(function() {
@@ -105,7 +97,7 @@
           projIndex = 0;
           renderEdges = !renderEdges;
         }
-      }, 2500);
+      }, 3000);
     </script>
   </body>
 </html>
